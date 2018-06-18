@@ -14,24 +14,25 @@ void draw();                            // draw the interface
 void play();                            // the main body, read in [w a s d q], alter the lattices, and redraw.
 void init();                            // initialization
 void draw_one (int y     , int x);      // draw single number
-void cnt_value(int* new_y, int* new_x);   
+void cnt_value(int* new_y, int* new_x); // capsule cnt_one
 int  game_over();
 int  cnt_one  (int y     , int x);      // generate the place of number
 /* E -------------- function declaration -------------- */
 
+
 /* S -------------- function implementation -------------- */
 void init()
 {   
-    initscr();      // initialize the window
-    cbreak();       // characters will be read in immediately(not waiting for user to press Enter)
-    noecho();       // won't show user's input on screen
-    curs_set(0);    // set curse to invisible(1: normal, 2: highly visible)
+    initscr();          // initialize the window
+    cbreak();           // characters will be read in immediately(not waiting for user to press Enter)
+    noecho();           // won't show user's input on screen
+    curs_set(0);        // set curse to invisible(1: normal, 2: highly visible)
 
     empty = 15;
     srand(time(0));
     int y = rand() % 4;
     int x = rand() % 4;
-    lattices[y][x] = 2;
+    lattices[y][x] = 2; // randomly choose a lattice to fullfill a '2'
     draw();
 }
 
@@ -85,8 +86,8 @@ void draw_one(int y, int x)
 void play()
 {
     while (1) {
-        int  move      = 0;
-        int  old_empty = empty;
+        int  move      = 0;             // in case of no move can be done when user gives an instruction
+        int  old_empty = empty;         // for later check of whether a move happened.
         char ch        = getchar();     // read in the instruction
 
         switch (ch) {
@@ -94,7 +95,7 @@ void play()
             case 'A':                                                           // left arrow
                 for (int y = 0; y < 4; y++) {
                     for (int x = 0; x < 4; ) {
-                        if (lattices[y][x] == 0) {
+                        if (lattices[y][x] == 0) { // empty lattice
                             x++;
                             continue;
                         } 
@@ -105,7 +106,7 @@ void play()
                                     continue;
                                 }
                                 else {
-                                    if (lattices[y][x] == lattices[y][i]) {
+                                    if (lattices[y][x] == lattices[y][i]) { // merge two lattices who have the same number
                                         lattices[y][x] += lattices[y][i];
                                         lattices[y][i]  = 0;
                                         empty++;
@@ -272,11 +273,11 @@ void play()
             default : continue   ; break;
         }
 
-        if (empty <= 0) {
+        if (empty <= 0) {                           // no empty lattices, lose
             game_over();
         }
 
-        if (empty != old_empty || move == 1) {
+        if (empty != old_empty || move == 1) {      // check for a redraw
             int new_x, new_y;
             int temp = 0;
             do {
@@ -298,7 +299,7 @@ void play()
     }
 }
 
-int cnt_one(int y, int x)
+int cnt_one(int y, int x)   // find the best place to draw the number
 {
     int value = 0;
 
@@ -314,7 +315,7 @@ int cnt_one(int y, int x)
     return value;
 }
 
-void cnt_value(int* new_y, int* new_x)
+void cnt_value(int* new_y, int* new_x)  // capsule cnt_one for all lattices
 {
     int max_x, max_y, value;
     int max = 0;
