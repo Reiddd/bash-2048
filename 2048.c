@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <curses.h>
+#include <curses.h> // API intr: http://pubs.opengroup.org/onlinepubs/7908799/xcurses/curses.h.html
 #include <time.h>
 #include <unistd.h>
 #include <signal.h>
